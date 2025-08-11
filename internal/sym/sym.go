@@ -30,7 +30,7 @@ func ProcessPackage(config *Config, pkg string) error {
 	if config.ReSym {
 		// Unstow first, then stow
 		if err := unsymPackage(config, pkg, pkgPath); err != nil {
-			return fmt.Errorf("failed to unstow during restow: %w", err)
+			return fmt.Errorf("failed to unsym during resym: %w", err)
 		}
 		return symPackage(config, pkg, pkgPath)
 	} else if config.Delete {
