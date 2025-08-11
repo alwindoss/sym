@@ -3,6 +3,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -52,6 +53,27 @@ across multiple machines with version control integration.`,
 			fmt.Fprintf(os.Stderr, "error: No packages specified\n\n\n")
 			cmd.Help()
 			os.Exit(1)
+		}
+		if len(args) > 0 {
+			if args[0] == "." {
+				rootDir := args[0]
+				err := filepath.Walk(rootDir, func(path string, info os.FileInfo, err error) error {
+					if err != nil {
+						// Handle errors that occurred during traversal (e.g., permission denied)
+						fmt.Printf("Error accessing path %s: %v\n", path, err)
+						return nil // Continue walking the tree despite the error
+					}
+
+					if info.IsDir() {
+						// fmt.Println(path) // Print the path of the discovered directory
+						config.Packages = append(config.Packages, path)
+					}
+					return nil
+				})
+				if err != nil {
+					log.Fatalf("Error walking the directory tree: %v", err)
+				}
+			}
 		}
 
 		// Convert to absolute paths
