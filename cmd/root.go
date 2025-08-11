@@ -2,7 +2,6 @@
 package cmd
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -39,9 +38,16 @@ across multiple machines with version control integration.`,
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
 	RunE: func(cmd *cobra.Command, args []string) error {
-		config := &sym.Config{}
+		config := &sym.Config{
+			SymDir:    symDir,
+			TargetDir: targetDir,
+			Verbose:   verbose,
+			Simulate:  simulate,
+			Delete:    deleteFlag,
+			ReSym:     resym,
+		}
 
-		config.Packages = flag.Args()
+		config.Packages = args
 		if len(config.Packages) == 0 {
 			fmt.Fprintf(os.Stderr, "error: No packages specified\n\n\n")
 			cmd.Help()
